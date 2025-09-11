@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\capstonVue\\capston-system\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\capstonVue\\capston-system\\src\\main\\java\\com\\example\\capston_system\\controller\\RecordingController.java||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\main\\java\\com\\example\\capston_system\\controller\\RecordingController.java||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\capstonVue\\capston-system\\src\\main\\java\\com\\example\\capston_system\\controller\\ExerciseDataController.java||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\main\\java\\com\\example\\capston_system\\controller\\ExerciseDataController.java||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RecordingController.java",
+              "DocumentMoniker": "C:\\capstonVue\\capston-system\\src\\main\\java\\com\\example\\capston_system\\controller\\RecordingController.java",
+              "RelativeDocumentMoniker": "src\\main\\java\\com\\example\\capston_system\\controller\\RecordingController.java",
+              "ToolTip": "C:\\capstonVue\\capston-system\\src\\main\\java\\com\\example\\capston_system\\controller\\RecordingController.java",
+              "RelativeToolTip": "src\\main\\java\\com\\example\\capston_system\\controller\\RecordingController.java",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQpSURBVFhH7Zc9aFtXFMd/9z09KdKr7WIUjDyZEqWeKnvxZAcTPAsvAXswVkwoIQQ6dDOhY\u002BgQSDJ4KDWu8RACWewx2JMTyOIlprj4kxQNdqQqdiTZ0tP7uBn6LJQryVKp2y79wUHcc88953/Rvee9B/8lUkrV9a8jVMcF/JVYgLZ21yxpGPgWGAf6gQ4goAa1wAGKwA6wAvzkj1vyFfCbv4PLtD1/MxcS/oeKn9sB0KkWreW7BouamqZpUghR529hs7UF9doB8CPQp/gaEo/HuXXrFvl8HoBSqaSGNKMT\u002BPl8oH0\u002B1/o/6u7uZmZmhrt37yKlJJ/P09/fz8DAAJFIRA1vxNe1A/UWFAFT8QFgGAZjY2PcvHmzWnh7e5vV1VVisRjRaBTDMEin0xwcHOC6rpriHMc/aw6KAAGUgFCND4BEIkEymaSjowPbtimXy3z48IF3796xvr5OZ2cnPT09mKaJYRjYts3e3h6Hh4dqKgDPF1ChHQHT09Pcu3cPAM/z8DwP13UplUqcnp5yeHiIruuEw2GCwSC6rqNpGkII3rx5w6NHj2rT4QuIAJY6IYCyemqHh4fl7Oys3NnZke1SqVRkNpuVqVRKvQEScGs3qR7COlzX5e3btzx48IC5uTmOj4/VkCqe53FyckI2m\u002BXVq1dsbm6qIXW0FCCEwLIsCoUCa2tr3L9/nxcvXmDbdjVGSkmxWCSTyXB2dkalUmFhYQHHcT7L1Yi2BEgpsSyLcrnM8fEx8/Pz3L59m9evX2NZFtlslo8fP\u002BK6LlJKlpeXSafTF92EKm0JEELgui62beM4Dq7r8v79e548ecLR0RG2bSOlREpJLpdjcXGxGteKlgI0TUPX/2yYnucBcPXqVa5fv04sFkNKied51d/zc2Lb9uUK0DSNrq4url27Rm9vL6ZpYppmdeee55HL5dja2sK27csToOs6pmkSj8fp6\u002BvDNE2CwSChUIhwOFwVIKVkd3eXiYkJpqamiEajbQlo2YjGx8e5ceNG9f/3PA9d1wkEAhiGQTKZRNM08vk86XQawzAQQuA4DktLSzx//rw2HWojailACMHo6CipVIpIJEKxWKxeQcMwGBkZQQhBJpMhEAgQCoU4OTnh8ePHrKysVM9NDU1bMRc9jK5cucLk5CTJZBLLsqhUKui6ztDQEKVSCcdxCAQCPHv2jLm5OQqFgprinKYPI4AjoEfxfUYsFuPOnTskEglc1yWRSGBZFhsbGzx8\u002BJD9/X11iUoB6PLbch3rDXp3QxscHJRPnz6VL1\u002B\u002BlGNjY3XzF9iGWrSW7xssaGq6rstgMFjnb2E/qEVr\u002BcJ/e1UXXZalgS/Voir9/turuvjvWhr4Ri2mvpQC/AH84t\u002BITv\u002Bj5DxOTXqRucAp8Kv/UZICfldq1d2CZgTa6ZoKni9CqhP/U8snc5CYfBx4ZXsAAAAASUVORK5CYII=",
+              "WhenOpened": "2025-08-17T05:41:47.015Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ExerciseDataController.java",
+              "DocumentMoniker": "C:\\capstonVue\\capston-system\\src\\main\\java\\com\\example\\capston_system\\controller\\ExerciseDataController.java",
+              "RelativeDocumentMoniker": "src\\main\\java\\com\\example\\capston_system\\controller\\ExerciseDataController.java",
+              "ToolTip": "C:\\capstonVue\\capston-system\\src\\main\\java\\com\\example\\capston_system\\controller\\ExerciseDataController.java",
+              "RelativeToolTip": "src\\main\\java\\com\\example\\capston_system\\controller\\ExerciseDataController.java",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQpSURBVFhH7Zc9aFtXFMd/9z09KdKr7WIUjDyZEqWeKnvxZAcTPAsvAXswVkwoIQQ6dDOhY\u002BgQSDJ4KDWu8RACWewx2JMTyOIlprj4kxQNdqQqdiTZ0tP7uBn6LJQryVKp2y79wUHcc88953/Rvee9B/8lUkrV9a8jVMcF/JVYgLZ21yxpGPgWGAf6gQ4goAa1wAGKwA6wAvzkj1vyFfCbv4PLtD1/MxcS/oeKn9sB0KkWreW7BouamqZpUghR529hs7UF9doB8CPQp/gaEo/HuXXrFvl8HoBSqaSGNKMT\u002BPl8oH0\u002B1/o/6u7uZmZmhrt37yKlJJ/P09/fz8DAAJFIRA1vxNe1A/UWFAFT8QFgGAZjY2PcvHmzWnh7e5vV1VVisRjRaBTDMEin0xwcHOC6rpriHMc/aw6KAAGUgFCND4BEIkEymaSjowPbtimXy3z48IF3796xvr5OZ2cnPT09mKaJYRjYts3e3h6Hh4dqKgDPF1ChHQHT09Pcu3cPAM/z8DwP13UplUqcnp5yeHiIruuEw2GCwSC6rqNpGkII3rx5w6NHj2rT4QuIAJY6IYCyemqHh4fl7Oys3NnZke1SqVRkNpuVqVRKvQEScGs3qR7COlzX5e3btzx48IC5uTmOj4/VkCqe53FyckI2m\u002BXVq1dsbm6qIXW0FCCEwLIsCoUCa2tr3L9/nxcvXmDbdjVGSkmxWCSTyXB2dkalUmFhYQHHcT7L1Yi2BEgpsSyLcrnM8fEx8/Pz3L59m9evX2NZFtlslo8fP\u002BK6LlJKlpeXSafTF92EKm0JEELgui62beM4Dq7r8v79e548ecLR0RG2bSOlREpJLpdjcXGxGteKlgI0TUPX/2yYnucBcPXqVa5fv04sFkNKied51d/zc2Lb9uUK0DSNrq4url27Rm9vL6ZpYppmdeee55HL5dja2sK27csToOs6pmkSj8fp6\u002BvDNE2CwSChUIhwOFwVIKVkd3eXiYkJpqamiEajbQlo2YjGx8e5ceNG9f/3PA9d1wkEAhiGQTKZRNM08vk86XQawzAQQuA4DktLSzx//rw2HWojailACMHo6CipVIpIJEKxWKxeQcMwGBkZQQhBJpMhEAgQCoU4OTnh8ePHrKysVM9NDU1bMRc9jK5cucLk5CTJZBLLsqhUKui6ztDQEKVSCcdxCAQCPHv2jLm5OQqFgprinKYPI4AjoEfxfUYsFuPOnTskEglc1yWRSGBZFhsbGzx8\u002BJD9/X11iUoB6PLbch3rDXp3QxscHJRPnz6VL1\u002B\u002BlGNjY3XzF9iGWrSW7xssaGq6rstgMFjnb2E/qEVr\u002BcJ/e1UXXZalgS/Voir9/turuvjvWhr4Ri2mvpQC/AH84t\u002BITv\u002Bj5DxOTXqRucAp8Kv/UZICfldq1d2CZgTa6ZoKni9CqhP/U8snc5CYfBx4ZXsAAAAASUVORK5CYII=",
+              "WhenOpened": "2025-08-17T05:41:32.263Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
