@@ -8,6 +8,7 @@ package com.example.capston_system.service; //이 코드의 위치
 
 import com.example.capston_system.entity.ExerciseData;
 import com.example.capston_system.repository.ExerciseDataRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExerciseDataService {
@@ -39,7 +41,9 @@ public class ExerciseDataService {
     }
 
     // 라즈베리 파이에서 운동량 값 받아와서 DB저장하고 저장한 엔티티 반환하는 메서드
-    public ExerciseData fetchAndSaveFromRaspberry(){
+    @Transactional
+    public ExerciseData fetchAndSaveFromRaspberry() {
+        // 1) 라즈베리에서 값 가져오기
         String url = raspberryPiUrl + "/gettotal";
         RaspberryResponse response = restTemplate.getForObject(url, RaspberryResponse.class);
 
@@ -47,25 +51,55 @@ public class ExerciseDataService {
             throw new RuntimeException("라즈베리 응답 없음");
         }
 
+        // 2) KST 기준 '어제' 날짜 계산
         LocalDate exerciseDate = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
-        //DB객체  생성
-        ExerciseData data = new ExerciseData();
-        data.setAmount(response.amount());
-        data.setExerciseDate(exerciseDate);
-    //repository.save(entity)는 entity DB에 저장하고 entity 반환
-        return repository.save(data);
+
+        // 3) 같은 날짜의 레코드가 있는지 조회
+        Optional<ExerciseData> opt = repository.findByExerciseDate(exerciseDate);
+
+        ExerciseData saved;
+        if (opt.isPresent()) {
+            // 4-a) 있으면 기존 amount에 더해서 업데이트
+            ExerciseData existing = opt.get();
+            existing.setAmount(existing.getAmount() + response.amount());
+            saved = repository.save(existing); // UPDATE
+        } else {
+            // 4-b) 없으면 새 엔티티 생성 후 저장
+            ExerciseData data = new ExerciseData(exerciseDate, response.amount());
+            saved = repository.save(data); // INSERT
+        }
+
+        // 5) 저장된 엔티티 반환
+        return saved;
     }
+//    중복날자시 새로 ID생성 해결 안된 버전
+//    public ExerciseData fetchAndSaveFromRaspberry(){
+//        String url = raspberryPiUrl + "/gettotal";
+//        RaspberryResponse response = restTemplate.getForObject(url, RaspberryResponse.class);
+//
+//        if (response == null) {
+//            throw new RuntimeException("라즈베리 응답 없음");
+//        }
+//
+//        LocalDate exerciseDate = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
+//        //DB객체  생성
+//        ExerciseData data = new ExerciseData();
+//        data.setAmount(response.amount());
+//        data.setExerciseDate(exerciseDate);
+//    //repository.save(entity)는 entity DB에 저장하고 entity 반환
+//        return repository.save(data);
+//    }
 
     // ===================== 스케줄러 =====================
     //@Scheduled 스프링 기능으로 특정시간마다 자동으로 실행할 메서드에 붙임
-    @Scheduled(cron = "0 10 0 * * *", zone = "Asia/Seoul")
-    public void scheduledFetchAndSave() {
-        try {
-            ExerciseData saved = fetchAndSaveFromRaspberry();
-            System.out.println("[스케줄러] " + saved.getExerciseDate() + " 저장 완료");
-        } catch (Exception e) {
-            System.err.println("[스케줄러] 오류 발생: " + e.getMessage());
-        }
-    }
+//    @Scheduled(cron = "0 10 0 * * *", zone = "Asia/Seoul")
+//    public void scheduledFetchAndSave() {
+//        try {
+//            ExerciseData saved = fetchAndSaveFromRaspberry();
+//            System.out.println("[스케줄러] " + saved.getExerciseDate() + " 저장 완료");
+//        } catch (Exception e) {
+//            System.err.println("[스케줄러] 오류 발생: " + e.getMessage());
+//        }
+//    }
 }
 
