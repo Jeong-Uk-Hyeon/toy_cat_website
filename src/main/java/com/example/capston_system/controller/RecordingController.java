@@ -1,366 +1,83 @@
-//package com.example.capston_system.controller;
-//
-//import jakarta.servlet.http.HttpServletResponse;
-//import org.apache.tomcat.util.http.fileupload.IOUtils;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//import org.springframework.web.client.RestTemplate;
-//
-//import java.io.File;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.net.URL;
-//import java.util.Arrays;
-//import java.util.List;
-//
-//@RestController
-//@RequestMapping("/api")
-//
-//public class RecordingController {
-//    private final String FLASK_SERVER = "http://192.168.76.98:5000";
-//
-//    /*@GetMapping("/dates")
-//    public ResponseEntity<List<String>> getAvailableDates() {
-//        File baseDir = new File("/home/pc/toy_cat/venv/Video/recordings");
-//        String[] dirs = baseDir.list((file, name) -> new File(file, name).isDirectory());
-//        return ResponseEntity.ok(Arrays.asList(dirs));
-//    }
-//    */
-//
-//    @GetMapping("/dates")
-//    public ResponseEntity<List<String>> getAvailableDates() {
-//        File baseDir = new File("/home/pc/toy_cat/venv/Video/recordings");
-//
-//        // 1. 경로가 존재하고 디렉토리인지 확인
-//        if (!baseDir.exists()) {
-//            System.out.println("Exists: " + baseDir.exists());
-//            System.out.println("Is Directory: " + baseDir.isDirectory());
-//            System.out.println("Can Read: " + baseDir.canRead());
-//            System.out.println("Can Write: " + baseDir.canWrite());
-//            System.out.println("Can Execute: " + baseDir.canExecute());
-//            System.out.println("디렉토리 존재하지 않음!");
-//            return ResponseEntity.ok(List.of()); // 빈 리스트 반환
-//        }
-//
-//        if (!baseDir.isDirectory()) {
-//            System.out.println("    디렉토리가 아님!");
-//            return ResponseEntity.ok(List.of()); // 빈 리스트 반환
-//        }
-//
-//        // 2. 폴더 읽기
-//        String[] dirs = baseDir.list((file, name) -> new File(file, name).isDirectory());
-//
-//        // 3. null 처리
-//        if (dirs == null) {
-//            System.out.println("/O 오류, 읽기 권한 없음, 비정상적 접근!");
-//            return ResponseEntity.ok(List.of()); // 빈 리스트로 처리
-//        }
-//
-//        return ResponseEntity.ok(Arrays.asList(dirs));
-//    }
-//
-//    @GetMapping("/videos/{date}")
-//    public ResponseEntity<String> getVideos(@PathVariable String date) {
-//        RestTemplate restTemplate = new RestTemplate();
-//        String url = FLASK_SERVER + "/videos/" + date;
-//        return restTemplate.getForEntity(url, String.class);
-//    }
-//
-//    @GetMapping("/video-stream/{date}/{filename}")
-//    public void streamVideo(@PathVariable String date, @PathVariable String filename, HttpServletResponse response) throws IOException {
-//        String videoUrl = FLASK_SERVER + "/video/" + date + "/" + filename;
-//        URL url = new URL(videoUrl);
-//        try (InputStream in = url.openStream()) {
-//            response.setContentType("video/mp4");
-//            IOUtils.copy(in, response.getOutputStream());
-//        }
-//    }
-//}
-//package com.example.capston_system.controller;
-//
-//import jakarta.servlet.http.HttpServletResponse;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.OutputStream;
-//import java.net.HttpURLConnection;
-//import java.net.URL;
-//public class RecordingController {
-//    @GetMapping("/api/video-stream/{date}/{filename}")
-//    public void proxyVideoStream(@PathVariable String date,
-//                                 @PathVariable String filename,
-//                                 HttpServletResponse response) throws IOException {
-//
-//        String flaskUrl = String.format("http://192.168.76.98:5000/video/recordings/%s/%s", date, filename);
-//        URL url = new URL(flaskUrl);
-//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//        conn.setRequestMethod("GET");
-//
-//        response.setContentType("video/mp4");
-//        response.setStatus(conn.getResponseCode());
-//
-//        try (InputStream is = conn.getInputStream();
-//             OutputStream os = response.getOutputStream()) {
-//
-//            byte[] buffer = new byte[8192];
-//            int bytesRead;
-//
-//            while ((bytesRead = is.read(buffer)) != -1) {
-//                os.write(buffer, 0, bytesRead);
-//            }
-//        }
-//    }
-//}
-
+// 라즈베리파이로 부터 받은 녹화영상 수신 및 저장
 package com.example.capston_system.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.*;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
-@RestController // REST API용 컨트롤러임을 명시. 각 메서드는 JSON 또는 Stream 등으로 데이터를 반환
-// @RequestMapping 스프링 애플리케이션에서 클라이언트의 HTTP 요청을 특정 자바 코드(컨트롤러 메서드)와 연결해주는 핵심적인 어노테이션
-@RequestMapping("/api") // 이 클래스의 모든 메서드는 "/api"로 시작하는 경로에서 호출 가능.
+@RestController
+@RequestMapping("/api/recording")
 public class RecordingController {
-
-    // 연결할 Flask 서버 주소. 이 서버에서 비디오 관련 데이터가 제공됨.
-    private final String FLASK_SERVER = "http://10.107.35.98:5000";
-    //private static final String VIDEO_BASE_PATH = "/home/pc/toy_cat/venv/Video/recordings"; // 비디오 저장위치
-
-    // 🎥 [GET] 날짜 목록을 가져오는 메서드
-    @GetMapping("/dates")
-    public List<String> getDates() throws IOException {
-        // Flask 서버의 /videos 엔드포인트에 GET 요청
-        URL url = new URL(FLASK_SERVER + "/videos");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        // 결과를 저장할 리스트
-        List<String> dates = new ArrayList<>();
-
-        // 응답 스트림을 읽고 JSON 형식의 문자열로 변환
-        try (InputStream is = conn.getInputStream()) {
-            String json = new String(is.readAllBytes());
-            // JSON 배열 파싱: ["2024-06-10", "2024-06-11", ...]
-
-            // JSON 배열 문자열에서 괄호([])와 따옴표("") 제거
-            json = json.replaceAll("[\\[\\]\"]", "");
-
-            // 문자열이 비어있지 않으면 쉼표(,) 기준으로 분리하여 날짜 리스트 생성
-            if (!json.isEmpty()) {
-                String[] items = json.split(",");
-                for (String item : items) {
-                    dates.add(item.trim());
-                }
-            }
+    // 1. 설정값 주입 (파일 저장 위치)
+    // application.properties 파일에 정의된 recordings.storage.path 값을 자동으로 가져옴
+    @Value("${recordings.storage.path}")
+    private String storagePath;
+    // 2. API 엔드포인트 정의
+    // 이 메서드는 외부(라즈베리파이)에서 HTTP POST 요청을 '/api/exercise/uploadRecording' 경로로 보낼 때 작동
+    // consumes = "multipart/form-data": 파일 전송에 사용되는 특별한 형식(POST)만 받도록 설정합니다.
+    @PostMapping(value = "/uploadRecording", consumes = "multipart/form-data")
+    public ResponseEntity<Map<String, String>> uploadRecording(@RequestParam("file") MultipartFile file) {
+        // 3. 응답 객체 준비
+        // 클라이언트에게 반환할 상태 메시지(JSON 형태)를 담을 Map 객체를 만듭니다.
+        Map<String, String> resp = new HashMap<>();
+        // 4. 요청 유효성 검사 (파일이 제대로 왔는지 확인)
+        if (file == null || file.isEmpty()) {
+            resp.put("status", "error");
+            resp.put("message", "No file uploaded");
+            return ResponseEntity.badRequest().body(resp);
         }
 
-        return dates; // 날짜 리스트 반환
-    }
+        // 5. 파일명 정리 (보안 강화)
+        // 파일명에서 경로 구분 문자(/, \)와 같은 불필요하거나 악의적인 문자를 제거하여 안전한 파일명을 만듭니다.
+        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
 
-
-
-    @GetMapping("/videos/{date}")
-    public List<String> getVideosByDate(@PathVariable String date) throws IOException {
-        URL url = new URL(FLASK_SERVER + "/videos/" + date);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        List<String> videos = new ArrayList<>();
-
-        try (InputStream is = conn.getInputStream()) {
-            String json = new String(is.readAllBytes());
-            json = json.replaceAll("[\\[\\]\"]", "");
-            if (!json.isEmpty()) {
-                String[] items = json.split(",");
-                for (String item : items) {
-                    videos.add(item.trim());
-                }
-            }
-        }
-
-        return videos;
-    }
-
-    @GetMapping("/video-stream/{date}/{filename}")
-    public void proxyVideoStream(@PathVariable String date,
-                                 @PathVariable String filename,
-                                 HttpServletResponse response,
-                                 @RequestHeader(value = "Range", required = false) String rangeHeader) throws IOException {
-
-        System.out.println("=== 비디오 스트리밍 요청 시작 ===");
-        System.out.println("📅 Date: " + date);
-        System.out.println("📁 Filename: " + filename);
-        System.out.println("🔄 Range Header: " + rangeHeader);
-
-        String flaskUrl = String.format(FLASK_SERVER + "/video/recordings/%s/%s", date, filename);
-        System.out.println("🌐 Flask URL: " + flaskUrl);
-
-        HttpURLConnection conn = null;
-        InputStream is = null;
-        OutputStream os = null;
+        // 6. 저장 경로 설정
+        // 저장 폴더: storagePath/yyyy-MM-dd/
+        LocalDate today = LocalDate.now();
+        // 최종 타겟 폴더 경로를 생성
+        Path targetDir = Paths.get(storagePath, today.toString());
 
         try {
-            URL url = new URL(flaskUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            // 7. 폴더 생성
+            // 파일이 저장될 날짜별 폴더가 없으면 새로 만듬
+            Files.createDirectories(targetDir);
+            // 8. 최종 파일 저장 경로 확정 파일이름 까지 추가해서
+            Path targetPath = targetDir.resolve(originalFilename);
 
-            // 타임아웃 설정 추가
-            conn.setConnectTimeout(10000); // 10초
-            conn.setReadTimeout(30000);    // 30초
-
-            if (rangeHeader != null) {
-                conn.setRequestProperty("Range", rangeHeader);
-                System.out.println("🔄 Range 헤더 설정됨: " + rangeHeader);
-            }
-
-            conn.connect();
-            int responseCode = conn.getResponseCode();
-            System.out.println("📡 Flask 응답 코드: " + responseCode);
-
-            // 에러 응답 처리
-            if (responseCode >= 400) {
-                System.err.println("❌ Flask 서버 에러: " + responseCode);
-
-                // 에러 스트림 읽기
-                try (InputStream errorStream = conn.getErrorStream()) {
-                    if (errorStream != null) {
-                        String errorMessage = new String(errorStream.readAllBytes());
-                        System.err.println("❌ 에러 메시지: " + errorMessage);
-                    }
-                }
-
-                response.setStatus(responseCode);
-                return;
-            }
-
-            // 헤더 복사
-            String[] headerKeys = {"Content-Range", "Accept-Ranges", "Content-Length", "Content-Type"};
-            for (String header : headerKeys) {
-                String value = conn.getHeaderField(header);
-                if (value != null) {
-                    response.setHeader(header, value);
-                    System.out.println("✅ 헤더 복사: " + header + " = " + value);
-                }
-            }
-
-            response.setStatus(responseCode);
-
-            // 스트림 처리 - 더 안전하게
-            is = conn.getInputStream();
-            os = response.getOutputStream();
-
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            long totalBytes = 0;
-            long startTime = System.currentTimeMillis();
-
-            System.out.println("📤 데이터 전송 시작...");
-
-            while ((bytesRead = is.read(buffer)) != -1) {
-                try {
-                    os.write(buffer, 0, bytesRead);
-                    os.flush(); // 즉시 전송
-                    totalBytes += bytesRead;
-
-                    // 진행상황 로그 (1MB마다)
-                    if (totalBytes % (1024 * 1024) == 0) {
-                        System.out.println("📊 전송 중: " + (totalBytes / 1024 / 1024) + "MB");
-                    }
-
-                } catch (IOException e) {
-                    System.err.println("❌ 클라이언트 연결 끊어짐: " + e.getMessage());
-                    break;
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("📊 전송 완료: " + totalBytes + " bytes (" + (endTime - startTime) + "ms)");
-
-        } catch (Exception e) {
-            System.err.println("❌ 스트림 처리 중 전체 오류: " + e.getMessage());
-            e.printStackTrace();
-
-            // 클라이언트에 에러 응답
-            if (!response.isCommitted()) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
-
-        } finally {
-            // 리소스 정리
+            // 9. 파일 저장 실행 (핵심 로직)
             try {
-                if (os != null) {
-                    os.close();
-                }
+                // file.getInputStream(): 업로드된 파일의 데이터를 읽어들이는 통로(스트림)입니다.
+                // targetPath로 파일 데이터를 복사하여 저장합니다.
+                Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                System.err.println("❌ OutputStream 닫기 실패: " + e.getMessage());
+                // 파일 시스템 쓰기 오류 처리 (저장 도중 디스크 문제 등)
+                resp.put("status", "error");
+                resp.put("message", "Failed to save file: " + e.getMessage());
+                return ResponseEntity.status(500).body(resp); // 500 Internal Server Error 반환
             }
+            // 10. 성공 응답
+            resp.put("status", "saved");
+            // 저장된 파일의 절대 경로를 클라이언트에게 함께 반환합니다
+            resp.put("savedPath", targetPath.toAbsolutePath().toString());
+            // 200 OK 상태와 함께 성공 정보를 JSON으로 반환하고 메서드를 종료합니다.
+            return ResponseEntity.ok(resp);
 
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                System.err.println("❌ InputStream 닫기 실패: " + e.getMessage());
-            }
-
-            if (conn != null) {
-                conn.disconnect();
-            }
-
-            System.out.println("=== 비디오 스트리밍 완료 ===");
+        } catch (IOException e) {
+            // 디렉터리 생성 오류 처리 (상위 경로 권한 문제 등)
+            resp.put("status", "error");
+            resp.put("message", "Could not create directories: " + e.getMessage());
+            return ResponseEntity.status(500).body(resp);
         }
     }
-
-//    @GetMapping("/video-stream/{date}/{filename}")
-//    public void proxyVideoStream(@PathVariable String date,
-//                                 @PathVariable String filename,
-//                                 HttpServletResponse response,
-//                                 @RequestHeader(value = "Range", required = false) String rangeHeader) throws IOException {
-//
-//        String flaskUrl = String.format(FLASK_SERVER + "/video/recordings/%s/%s", date, filename);
-//        URL url = new URL(flaskUrl);
-//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//        conn.setRequestMethod("GET");
-//
-//        if (rangeHeader != null) {
-//            conn.setRequestProperty("Range", rangeHeader);
-//        }
-//
-//        conn.connect();
-//
-//        // 복사할 헤더들
-//        String[] headerKeys = {"Content-Range", "Accept-Ranges", "Content-Length", "Content-Type"};
-//        for (String header : headerKeys) {
-//            String value = conn.getHeaderField(header);
-//            if (value != null) {
-//                response.setHeader(header, value);
-//            }
-//        }
-//
-//        response.setStatus(conn.getResponseCode());
-//
-//        try (InputStream is = conn.getInputStream();
-//             OutputStream os = response.getOutputStream()) {
-//
-//            byte[] buffer = new byte[8192];
-//            int bytesRead;
-//            while ((bytesRead = is.read(buffer)) != -1) {
-//                os.write(buffer, 0, bytesRead);
-//            }
-//        }
-//    }
 }
+
 

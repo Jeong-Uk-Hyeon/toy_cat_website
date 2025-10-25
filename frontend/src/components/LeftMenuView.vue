@@ -3,7 +3,7 @@
 		<button @click="$emit('change-view', 'RealtimeVideo')">실시간 영상</button>
 		<button @click="$emit('change-view', 'RecordedVideo')">녹화된 영상</button>
 		<button @click="$emit('change-view', 'AmountExercise')">운동량</button>
-		<button @click="$emit('change-view', 'RangeSetting')">기타</button>
+		<button @click="$emit('change-view', 'RangeSetting')">놀이범위 설정</button>
 	</div>
   </template>
   

@@ -5,7 +5,6 @@
 
     <button @click="startPlay">놀이 시작</button>
     <button @click="endPlay">놀이 끝</button>
-    <p>운동량: {{ exerciseAmount }}</p>
   </div>
 </template>
 
@@ -13,7 +12,7 @@
 import { ref } from "vue";
 import axios from "axios";
 
-//const videoUrl = "http://10.99.89.98:5000/video_feed";
+const videoUrl = "http://10.126.61.98:5000/video_feed";
 const exerciseAmount = ref(0);
 
 const startPlay = async () => {

@@ -32,7 +32,8 @@ public class ExerciseDataService {
     private String raspberryPiUrl;
 
     //DTO로 record 객체를 사용 record클래스를 사용하면 변수명 여기선 RaspberryResponse도 하나의 클래스가 됨
-    public record RaspberryResponse(int amount) {}
+    public record RaspberryResponse(int amount) {
+    }
 
     // 범위 정해서 조회
 
@@ -72,34 +73,5 @@ public class ExerciseDataService {
         // 5) 저장된 엔티티 반환
         return saved;
     }
-//    중복날자시 새로 ID생성 해결 안된 버전
-//    public ExerciseData fetchAndSaveFromRaspberry(){
-//        String url = raspberryPiUrl + "/gettotal";
-//        RaspberryResponse response = restTemplate.getForObject(url, RaspberryResponse.class);
-//
-//        if (response == null) {
-//            throw new RuntimeException("라즈베리 응답 없음");
-//        }
-//
-//        LocalDate exerciseDate = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
-//        //DB객체  생성
-//        ExerciseData data = new ExerciseData();
-//        data.setAmount(response.amount());
-//        data.setExerciseDate(exerciseDate);
-//    //repository.save(entity)는 entity DB에 저장하고 entity 반환
-//        return repository.save(data);
-//    }
-
-    // ===================== 스케줄러 =====================
-    //@Scheduled 스프링 기능으로 특정시간마다 자동으로 실행할 메서드에 붙임
-//    @Scheduled(cron = "0 10 0 * * *", zone = "Asia/Seoul")
-//    public void scheduledFetchAndSave() {
-//        try {
-//            ExerciseData saved = fetchAndSaveFromRaspberry();
-//            System.out.println("[스케줄러] " + saved.getExerciseDate() + " 저장 완료");
-//        } catch (Exception e) {
-//            System.err.println("[스케줄러] 오류 발생: " + e.getMessage());
-//        }
-//    }
 }
 
