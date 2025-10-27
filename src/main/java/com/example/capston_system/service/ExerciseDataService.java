@@ -1,6 +1,5 @@
 // 기능 1 범위정해서 운동량 조회
 // 기능 2 DB에 운동량 저장
-// 기능 3 매일 00:10분마다 실행
 
 package com.example.capston_system.service; //이 코드의 위치
 
