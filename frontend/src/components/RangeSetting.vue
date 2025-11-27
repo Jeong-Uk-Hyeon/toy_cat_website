@@ -9,7 +9,7 @@
     <div class="image-container">
       <img
         ref="img"
-        src="http://10.126.61.98:5000/video_feed"
+        src="http://192.168.0.27:5000/video_feed"
         alt="실시간 영상"
         width="640"
         height="480"

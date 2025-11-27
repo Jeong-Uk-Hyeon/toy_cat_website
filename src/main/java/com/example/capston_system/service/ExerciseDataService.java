@@ -51,8 +51,8 @@ public class ExerciseDataService {
             throw new RuntimeException("라즈베리 응답 없음");
         }
 
-        // 2) KST 기준 '어제' 날짜 계산
-        LocalDate exerciseDate = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
+        // 2) KST 기준 날짜 계산
+        LocalDate exerciseDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         // 3) 같은 날짜의 레코드가 있는지 조회
         Optional<ExerciseData> opt = repository.findByExerciseDate(exerciseDate);
